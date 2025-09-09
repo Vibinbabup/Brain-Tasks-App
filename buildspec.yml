@@ -1,12 +1,5 @@
 version: 0.2
 
-env:
-  variables:
-    AWS_REGION: ap-southeast-1
-    ECR_REPOSITORY: brain-tasks-app
-    IMAGE_TAG: latest
-    ACCOUNT_ID: 192706391702
-
 phases:
   install:
     commands:
@@ -17,18 +10,19 @@ phases:
   pre_build:
     commands:
       - echo Logging in to Amazon ECR
-      - aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com
-      - REPOSITORY_URI=$ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$ECR_REPOSITORY
+      - aws ecr get-login-password --region ap-southeast-1 | docker login --username AWS --password-stdin 192706391702.dkr.ecr.ap-southeast-1.amazonaws.com
+      - echo "ECR login successful"
+      - REPOSITORY_URI=192706391702.dkr.ecr.ap-southeast-1.amazonaws.com/brain-tasks-app
   build:
     commands:
       - echo Build Docker image
-      - docker build -t $ECR_REPOSITORY .
-      - docker tag $ECR_REPOSITORY:$IMAGE_TAG $REPOSITORY_URI:$IMAGE_TAG
-      - docker push $REPOSITORY_URI:$IMAGE_TAG
+      - docker build -t brain-tasks-app .
+      - docker tag brain-tasks-app:latest $REPOSITORY_URI:latest
+      - docker push $REPOSITORY_URI:latest
   post_build:
     commands:
       - echo Build and push completed successfully
-      - echo "Post-build phase executed"   # <-- extra command to ensure non-empty
+      - echo "Post-build phase executed"
 
 artifacts:
   files:
