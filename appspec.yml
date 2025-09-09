@@ -1,0 +1,17 @@
+version: 0.0
+Resources:
+  - TargetService:
+      Type: AWS::ECS::Service  # Optional for ECS, for EKS use scripts
+Hooks:
+  BeforeInstall:
+    - location: scripts/predeploy.sh
+      timeout: 300
+      runas: root
+  AfterInstall:
+    - location: scripts/deploy.sh
+      timeout: 300
+      runas: root
+  ApplicationStart:
+    - location: scripts/start.sh
+      timeout: 300
+      runas: root
