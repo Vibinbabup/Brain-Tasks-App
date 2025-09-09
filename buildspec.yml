@@ -3,22 +3,23 @@ version: 0.2
 phases:
   install:
     commands:
-      - echo Installing kubectl
+      - echo Installing kubectl...
       - curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
       - chmod +x kubectl
       - mv kubectl /usr/local/bin/
   pre_build:
     commands:
-      - echo Checking AWS CLI and Docker versions
+      - echo "Checking AWS CLI version..."
       - aws --version
-      - docker --version
-      - echo Logging in to Amazon ECR
+      - echo "Checking Docker version..."
+      - docker version
+      - echo "Attempting ECR login..."
       - aws ecr get-login-password --region ap-southeast-1 | docker login --username AWS --password-stdin 192706391702.dkr.ecr.ap-southeast-1.amazonaws.com
       - echo "ECR login successful"
       - REPOSITORY_URI=192706391702.dkr.ecr.ap-southeast-1.amazonaws.com/brain-tasks-app
   build:
     commands:
-      - echo Building Docker image
+      - echo Building Docker image...
       - docker build -t brain-tasks-app .
       - docker tag brain-tasks-app:latest $REPOSITORY_URI:latest
       - docker push $REPOSITORY_URI:latest
