@@ -1,0 +1,20 @@
+version: 0.0
+resources:
+  - targetService:
+      type: AWS::EKS::Service
+      properties:
+        clusterName: your-eks-cluster-name
+        serviceName: brain-tasks-service
+        containerName: brain-tasks-container
+        imageUri: "<ECR_REPOSITORY_URI>:<IMAGE_TAG>"
+
+hooks:
+  BeforeInstall:
+    - location: scripts/before_install.sh
+      timeout: 300
+  AfterInstall:
+    - location: scripts/after_install.sh
+      timeout: 300
+  ApplicationStart:
+    - location: scripts/start_application.sh
+      timeout: 300
